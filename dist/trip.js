@@ -722,7 +722,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.showProgressBar(delay);
 	    this.progressing = true;
 
-	    tripChange(this.tripIndex, tripObject);
+	    tripChange(this.tripIndex, tripObject, this.tripData.length);
 	    tripStart(this.tripIndex, tripObject);
 
 	    // set timer to show next, if the timer is less than zero we expect
@@ -957,7 +957,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    $tripBlock
 	      .find('.trip-prev')
 	      .html(prevLabel)
-	      .toggle(showNavigation && !this.isFirst());
+	      .toggle(showNavigation && !this.isFirst() && prevLabel !== '');
 
 	    $tripBlock
 	      .find('.trip-next')
