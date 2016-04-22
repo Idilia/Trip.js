@@ -501,7 +501,7 @@ Trip.prototype = {
    * @param {Object} o
    */
   showCurrentTrip: function(o) {
-    if (this.settings.enableAnimation) {
+    if (this.settings.enableAnimation && !o.disableAnimation) {
       this.removeAnimation();
     }
 
@@ -524,7 +524,7 @@ Trip.prototype = {
     this.setTripBlock(o);
     this.showTripBlock(o);
 
-    if (this.settings.enableAnimation) {
+    if (this.settings.enableAnimation && !o.disableAnimation) {
       this.addAnimation(o);
     }
 
@@ -630,13 +630,22 @@ Trip.prototype = {
   run: function() {
     var that = this;
     var tripObject = this.getCurrentTripObject();
-    var tripStart = tripObject.onTripStart || this.settings.onTripStart;
-    var tripChange = tripObject.onTripChange || this.settings.onTripChange;
-    var delay = tripObject.delay || this.settings.delay;
 
     if (!this.isTripDataValid(tripObject)) {
       // force developers to double check tripData again
-      if (this.settings.skipUndefinedTrip === false) {
+      if (tripObject.waitForSel === true) {
+        // At this point, the sel element exists in the DOM but might not be
+        // visible. We will wait for it to become visible
+        if (tripObject.sel && !$(tripObject.sel).is(":visible")) {
+          setTimeout(function(trip) {
+            return function() {
+              trip.run();
+            };
+          }(this), 100);
+          return;
+        }
+      }
+      else if (this.settings.skipUndefinedTrip === false) {
         this.console.error(
           'Your tripData is not valid at index: ' + this.tripIndex);
         this.stop();
@@ -648,8 +657,16 @@ Trip.prototype = {
       }
     }
 
+    var tripStart = tripObject.onTripStart || this.settings.onTripStart;
+    var tripChange = tripObject.onTripChange || this.settings.onTripChange;
+    var delay = tripObject.delay || this.settings.delay;
+    var showProgressBar = tripObject.showProgressBar ||
+                            this.settings.showProgressBar;
+
     this.showCurrentTrip(tripObject);
-    this.showProgressBar(delay);
+    if (showProgressBar) {
+      this.showProgressBar(delay);
+    }
     this.progressing = true;
 
     tripChange(this.tripIndex, tripObject, this.tripData.length);
@@ -863,7 +880,9 @@ Trip.prototype = {
 
     // toggle used settings
     var showCloseBox = o.showCloseBox || this.settings.showCloseBox;
-    var showNavigation = o.showNavigation || this.settings.showNavigation;
+    var showNavigation = typeof o.showNavigation != 'undefined' ?
+                          o.showNavigation :
+                          this.settings.showNavigation;
     var showHeader = o.showHeader || this.settings.showHeader;
 
     // labels
@@ -1165,6 +1184,12 @@ Trip.prototype = {
 
       $tripBlock.find('.trip-prev').on('click', function(e) {
         e.preventDefault();
+        var tripObject = that.getCurrentTripObject();
+        var tripStopClickPropagation = tripObject.stopClickPropagation ||
+                                       that.settings.stopClickPropagation;
+        if (tripStopClickPropagation) {
+          e.stopPropagation();
+        }
         // Force IE/FF to lose focus
         $(this).blur();
         that.prev();
@@ -1172,6 +1197,12 @@ Trip.prototype = {
 
       $tripBlock.find('.trip-next').on('click', function(e) {
         e.preventDefault();
+        var tripObject = that.getCurrentTripObject();
+        var tripStopClickPropagation = tripObject.stopClickPropagation ||
+                                       that.settings.stopClickPropagation;
+        if (tripStopClickPropagation) {
+          e.stopPropagation();
+        }
         // Force IE/FF to lose focus
         $(this).blur();
         that.next();
