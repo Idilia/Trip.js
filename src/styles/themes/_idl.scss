@@ -1,0 +1,68 @@
+// Default Trip Theme - Dark
+.trip-overlay.idl {
+  @include opacity(0.3);
+}
+
+.trip-block.idl {
+  min-width: 250px;
+  max-width: 250px;
+  padding: 20px;
+  pointer-events: initial;
+  background: #fff;
+  @include box-shadow(rgba(0, 0, 0, 0.2) 0 2px 4px 0);
+
+  .trip-close {
+    color: #777;
+    font-size: 1.6em;
+    font-weight: bold;
+    margin-left: 10px;
+    margin-right: -10px;
+
+    &:hover {
+      color: #000;
+    }
+  }
+
+  &.n:before {
+    border-top-color: #fff;
+  }
+
+  &.s:before {
+    border-bottom-color: #fff;
+  }
+
+  &.e:before {
+    border-right-color: #fff;
+  }
+
+  &.w:before {
+    border-left-color: #fff;
+  }
+
+  .trip-header {
+    margin-bottom: 12px;
+    font-weight: 600;
+    text-align: left;
+  }
+
+  .trip-content {
+    text-align: left;
+  }
+
+  .trip-progress-wrapper {
+    padding-top: 5px;
+    text-align: left;
+
+    .trip-prev,
+    .trip-next {
+      margin: 5px 10px;
+      margin-bottom: -5px;
+      margin-left: 0px;
+    }
+
+    .trip-prev:hover,
+    .trip-next:hover {
+      background:#666;
+    }
+  }
+}
