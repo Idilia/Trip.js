@@ -390,6 +390,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  /**
+	   * Common cleanup when finishing/stopping trip
+	   */
+	  cleanUpOnExit: function() {
+	    if (this.timer) {
+	      this.timer.stop();
+	    }
+
+	    if (this.hasExpose) {
+	      this.hideExpose();
+	    }
+
+	    this.hideTripBlock();
+	    this.unbindKeyEvents();
+	    this.unbindResizeEvents();
+
+	    var tripObject = this.getCurrentTripObject();
+	    if (tripObject.nextClickSelector) {
+	    $(tripObject.nextClickSelector)
+	      .off('click.Trip')
+	      .css('pointer-events', "");
+	    }
+
+	    $(document.body).css('pointer-events', '');
+	  },
+
+	  /**
 	   * Bound keydown events. We will do specific actions when matched keys
 	   * are pressed by user.
 	   *
@@ -429,23 +455,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @public
 	   */
 	  stop: function() {
-	    if (this.timer) {
-	      this.timer.stop();
-	    }
-
-	    if (this.hasExpose) {
-	      this.hideExpose();
-	    }
-
-	    this.hideTripBlock();
-	    this.unbindKeyEvents();
-	    this.unbindResizeEvents();
+	    this.cleanUpOnExit();
 
 	    var tripObject = this.getCurrentTripObject();
-	    if (tripObject.nextClickSelector) {
-	      $(tripObject.nextClickSelector).off('click.Trip');
-	    }
-
 	    var tripStop = tripObject.onTripStop || this.settings.onTripStop;
 	    tripStop(this.tripIndex, tripObject);
 
@@ -611,20 +623,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @type {Function}
 	   */
 	  doLastOperation: function() {
-	    if (this.timer) {
-	      this.timer.stop();
-	    }
-
-	    if (this.settings.enableKeyBinding) {
-	      this.unbindKeyEvents();
-	    }
-
-	    this.hideTripBlock();
-	    this.unbindResizeEvents();
-
-	    if (this.hasExpose) {
-	      this.hideExpose();
-	    }
+	    this.cleanUpOnExit();
 
 	    if (this.settings.backToTopWhenEnded) {
 	      this.$root.animate({ scrollTop: 0 }, 'slow');
@@ -996,9 +995,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // if we have a nextClickSelector use that as the trigger for
 	    // the next button
 	    if (o.nextClickSelector) {
-	      $(o.nextClickSelector).off('click.Trip');
+	      $(o.nextClickSelector).off('click.Trip')
+	                            .css('pointer-events', 'auto');
 	      $(o.nextClickSelector).one('click.Trip', function(e) {
 	        e.preventDefault();
+	        $(this).css('pointer-events', "");
 	        // Force IE/FF to lose focus
 	        $(this).blur();
 	        that.next();
@@ -1244,6 +1245,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      $('body').append($tripBlock);
 
+	      $tripBlock.on('click', function(e) {
+	        e.preventDefault();
+	        var tripObject = that.getCurrentTripObject();
+	        var tripStopClickPropagation = tripObject.stopClickPropagation ||
+	                                       that.settings.stopClickPropagation;
+	        if (tripStopClickPropagation) {
+	          e.stopPropagation();
+	        }
+	      });
+
 	      $tripBlock.find('.trip-close').on('click', function(e) {
 	        e.preventDefault();
 	        var tripObject = that.getCurrentTripObject();
@@ -1254,12 +1265,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      $tripBlock.find('.trip-prev').on('click', function(e) {
 	        e.preventDefault();
-	        var tripObject = that.getCurrentTripObject();
-	        var tripStopClickPropagation = tripObject.stopClickPropagation ||
-	                                       that.settings.stopClickPropagation;
-	        if (tripStopClickPropagation) {
-	          e.stopPropagation();
-	        }
 	        // Force IE/FF to lose focus
 	        $(this).blur();
 	        that.prev();
@@ -1267,12 +1272,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      $tripBlock.find('.trip-next').on('click', function(e) {
 	        e.preventDefault();
-	        var tripObject = that.getCurrentTripObject();
-	        var tripStopClickPropagation = tripObject.stopClickPropagation ||
-	                                       that.settings.stopClickPropagation;
-	        if (tripStopClickPropagation) {
-	          e.stopPropagation();
-	        }
 	        // Force IE/FF to lose focus
 	        $(this).blur();
 	        that.next();
@@ -1336,6 +1335,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.$tripBlock = $('.trip-block');
 	    this.$bar = $('.trip-progress-bar');
 	    this.$overlay = $('.trip-overlay');
+	    $(document.body).css('pointer-events', 'none');
 	  },
 
 	  /**

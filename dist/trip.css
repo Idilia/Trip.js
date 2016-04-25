@@ -1091,7 +1091,7 @@
  *  implement with more details later
  */
 .trip-exposed {
-  background: white; }
+  opacity: 1.0; }
 
 .trip-block.black {
   background: #333;
@@ -1239,3 +1239,50 @@
     border-radius: 0px 0px 0px 5px; }
   .trip-block.dark .trip-progress-wrapper .trip-progress-bar {
     background: green; }
+
+.trip-overlay.idl {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=30);
+  opacity: 0.3; }
+
+.trip-block.idl {
+  min-width: 250px;
+  max-width: 250px;
+  padding: 20px;
+  pointer-events: initial;
+  background: #fff;
+  -moz-box-shadow: rgba(0, 0, 0, 0.2) 0 2px 4px 0;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.2) 0 2px 4px 0;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 2px 4px 0; }
+  .trip-block.idl .trip-close {
+    color: #777;
+    font-size: 1.6em;
+    font-weight: bold;
+    margin-left: 10px;
+    margin-right: -10px; }
+    .trip-block.idl .trip-close:hover {
+      color: #000; }
+  .trip-block.idl.n:before {
+    border-top-color: #fff; }
+  .trip-block.idl.s:before {
+    border-bottom-color: #fff; }
+  .trip-block.idl.e:before {
+    border-right-color: #fff; }
+  .trip-block.idl.w:before {
+    border-left-color: #fff; }
+  .trip-block.idl .trip-header {
+    margin-bottom: 12px;
+    font-weight: 600;
+    text-align: left; }
+  .trip-block.idl .trip-content {
+    text-align: left; }
+  .trip-block.idl .trip-progress-wrapper {
+    padding-top: 5px;
+    text-align: left; }
+    .trip-block.idl .trip-progress-wrapper .trip-prev,
+    .trip-block.idl .trip-progress-wrapper .trip-next {
+      margin: 5px 10px;
+      margin-bottom: -5px;
+      margin-left: 0px; }
+    .trip-block.idl .trip-progress-wrapper .trip-prev:hover,
+    .trip-block.idl .trip-progress-wrapper .trip-next:hover {
+      background: #666; }
