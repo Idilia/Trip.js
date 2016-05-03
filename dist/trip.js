@@ -998,7 +998,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      $(o.nextClickSelector).off('click.Trip')
 	                            .css('pointer-events', 'auto');
 	      $(o.nextClickSelector).one('click.Trip', function(e) {
-	        e.preventDefault();
 	        $(this).css('pointer-events', "");
 	        // Force IE/FF to lose focus
 	        $(this).blur();
