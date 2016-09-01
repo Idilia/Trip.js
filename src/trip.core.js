@@ -617,8 +617,12 @@ Trip.prototype = {
 
     if (!this.isTripDataValid(tripObject)) {
       // force developers to double check tripData again
-      if (this.settings.skipUndefinedTrip === false) {
-        TripUtils.log('Your tripData is not valid at index: ' + this.tripIndex);
+      if (
+          (typeof this.settings.skipUndefinedTrip === "function" &&
+           !this.settings.skipUndefinedTrip(this.tripIndex, tripObject)) ||
+          this.settings.skipUndefinedTrip === false) {
+        TripUtils.log
+            ('Your tripData is not valid at index: ' + this.tripIndex);
         this.stop();
         return false;
       }
