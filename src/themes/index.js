@@ -4,5 +4,6 @@ module.exports = {
   white: require('./default'),
   yeti: require('./default'),
   default: require('./default'),
-  minimalism: require('./minimalism')
+  minimalism: require('./minimalism'),
+  idl: require('./idl')
 };
