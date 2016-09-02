@@ -935,7 +935,7 @@
  *  implement with more details later
  */
 .trip-exposed {
-  background: white; }
+  /*  background: white */ }
 
 .trip-overlay {
   display: none;
@@ -947,6 +947,12 @@
   height: 100%;
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70);
   opacity: 0.7; }
+
+.trip-unclickable {
+  pointer-events: none; }
+
+.trip-clickable {
+  pointer-events: initial; }
 
 .trip-block {
   display: none;
@@ -1343,3 +1349,50 @@
     border-top: 1px solid #bebebe;
     padding: 15px;
     flex-basis: 100%; }
+
+.trip-overlay.idl {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=20);
+  opacity: 0.2; }
+
+.trip-block.idl {
+  min-width: 250px;
+  max-width: 250px;
+  padding: 20px;
+  background: #fff;
+  -moz-box-shadow: rgba(0, 0, 0, 0.2) 0 2px 4px 0;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.2) 0 2px 4px 0;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 2px 4px 0; }
+  .trip-block.idl .trip-close {
+    color: #777;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-left: 10px;
+    margin-right: -10px;
+    margin-top: -7px; }
+    .trip-block.idl .trip-close:hover {
+      color: #000; }
+  .trip-block.idl.n:before {
+    border-top-color: #fff; }
+  .trip-block.idl.s:before {
+    border-bottom-color: #fff; }
+  .trip-block.idl.e:before {
+    border-right-color: #fff; }
+  .trip-block.idl.w:before {
+    border-left-color: #fff; }
+  .trip-block.idl .trip-header {
+    margin-bottom: 12px;
+    font-weight: 600;
+    text-align: left; }
+  .trip-block.idl .trip-content {
+    text-align: left; }
+  .trip-block.idl .trip-navigation {
+    margin-top: -10px;
+    display: block;
+    text-align: left; }
+  .trip-block.idl .trip-prev,
+  .trip-block.idl .trip-next {
+    margin: 15px 0px;
+    margin-bottom: -5px; }
+  .trip-block.idl .progress {
+    height: 10px;
+    margin-bottom: 10px; }
