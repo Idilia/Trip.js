@@ -275,6 +275,28 @@ Trip.prototype = {
   },
 
   /**
+   * Common cleanup when finishing/stopping trip
+   */
+  cleanUpOnExit: function() {
+    if (this.timer) {
+      this.timer.stop();
+      this.timer = null;
+    }
+
+    if (this.hasExposedElements) {
+      this.hideExposedElements();
+      this.toggleExposedOverlay(false);
+    }
+
+    this.hideTripBlock();
+    if (this.settings.enableKeyBinding) {
+      this.unbindKeyEvents();
+    }
+    this.unbindResizeEvents();
+    this.cleanup();
+  },
+
+  /**
    * Bound keydown events. We will do specific actions when matched keys
    * are pressed by user.
    *
@@ -314,19 +336,7 @@ Trip.prototype = {
    * @public
    */
   stop: function() {
-    if (this.timer) {
-      this.timer.stop();
-      this.timer = null;
-    }
-
-    if (this.hasExposedElements) {
-      this.hideExposedElements();
-      this.toggleExposedOverlay(false);
-    }
-
-    this.hideTripBlock();
-    this.unbindKeyEvents();
-    this.unbindResizeEvents();
+    this.cleanUpOnExit();
 
     var tripObject = this.getCurrentTripObject();
     if (tripObject.nextClickSelector) {
@@ -526,22 +536,7 @@ Trip.prototype = {
    * @type {Function}
    */
   doLastOperation: function() {
-    if (this.timer) {
-      this.timer.stop();
-      this.timer = null;
-    }
-
-    if (this.settings.enableKeyBinding) {
-      this.unbindKeyEvents();
-    }
-
-    this.hideTripBlock();
-    this.unbindResizeEvents();
-
-    if (this.hasExposedElements) {
-      this.hideExposedElements();
-      this.toggleExposedOverlay(false);
-    }
+    this.cleanUpOnExit();
 
     if (this.settings.backToTopWhenEnded) {
       this.$root.animate({ scrollTop: 0 }, 'slow');
