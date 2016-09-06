@@ -912,7 +912,6 @@ Trip.prototype = {
     if (o.nextClickSelector) {
       $(o.nextClickSelector).off('click.Trip');
       $(o.nextClickSelector).one('click.Trip', function(e) {
-        e.preventDefault();
         // Force IE/FF to lose focus
         $(this).blur();
         that.next();
