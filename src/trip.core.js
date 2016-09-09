@@ -293,6 +293,8 @@ Trip.prototype = {
       this.unbindKeyEvents();
     }
     this.unbindResizeEvents();
+
+    $("body").removeClass('trip-unclickable');
     this.cleanup();
   },
 
@@ -340,7 +342,9 @@ Trip.prototype = {
 
     var tripObject = this.getCurrentTripObject();
     if (tripObject.nextClickSelector) {
-      $(tripObject.nextClickSelector).off('click.Trip');
+      var $clickSel = $(tripObject.nextClickSelector);
+      $clickSel.removeClass('trip-clickable');
+      $clickSel.off('click.Trip');
     }
 
     var tripStop = tripObject.onTripStop || this.settings.onTripStop;
@@ -914,9 +918,12 @@ Trip.prototype = {
     // if we have a nextClickSelector use that as the trigger for
     // the next button
     if (o.nextClickSelector) {
-      $(o.nextClickSelector).off('click.Trip');
-      $(o.nextClickSelector).one('click.Trip', function(e) {
+      var $clickSel = $(o.nextClickSelector);
+      $clickSel.off('click.Trip');
+      $clickSel.addClass('trip-clickable');
+      $clickSel.one('click.Trip', function(e) {
         // Force IE/FF to lose focus
+        $(this).removeClass("trip-clickable");
         $(this).blur();
         that.next();
       });
@@ -1162,6 +1169,7 @@ Trip.prototype = {
       $tripBlock
         .addClass(this.settings.tripTheme)
         .addClass(this.settings.tripClass)
+        .addClass('trip-clickable')
         .addClass('tripjs');
 
       $('body').append($tripBlock);
@@ -1254,6 +1262,7 @@ Trip.prototype = {
       var $overlay = $(html);
       $overlay
         .height($(window).height())
+        .addClass(this.settings.tripTheme)
         .css({
           zIndex: this.settings.overlayZindex
         });
@@ -1305,8 +1314,9 @@ Trip.prototype = {
     this.$tripBlock = $('.trip-block');
     this.$bar = $('.trip-progress-bar');
     this.$overlay = $('.trip-overlay');
-
     this.setIndex(this.settings.tripIndex);
+
+    $("body").addClass('trip-unclickable');
   },
 
   /**
