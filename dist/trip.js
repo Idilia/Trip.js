@@ -169,6 +169,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // callbacks for whole process
 	    onStart: noop,
 	    onEnd: noop,
+	    onError: noop,
 
 	    // callbacks for each trip
 	    onTripStart: noop,
@@ -485,9 +486,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @type {Function}
 	   * @public
 	   */
-	  next: function(tripIndex) {
+	  next: function(nextTripIndex) {
 	    var that = this;
-	    var useDifferentIndex = !isNaN(tripIndex);
+	    var useDifferentIndex = !isNaN(nextTripIndex);
 
 	    // If we do give `tripIndex` here, it means that we want to directly jump
 	    // to that index no matter how. So in that case, ignore `canGoNext` check.
@@ -503,13 +504,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var tripObject = this.getCurrentTripObject();
 	    var tripEnd = tripObject.onTripEnd || this.settings.onTripEnd;
 	    var tripEndDefer = tripEnd.call(this, this.tripIndex, tripObject);
+	    var thisTripIndex = this.tripIndex;
 
 	    $.when(tripEndDefer).then(function() {
 	      if (useDifferentIndex) {
 	        if (that.timer) {
 	          that.timer.stop();
 	        }
-	        that.setIndex(tripIndex);
+	        that.setIndex(nextTripIndex);
 	        that.run();
 	        return;
 	      }
@@ -520,6 +522,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      else {
 	        that.increaseIndex();
 	        that.run();
+	      }
+	    }, function(v) {
+	      if (that.settings.onError(thisTripIndex, tripObject, v)) {
+	        that.stop();
 	      }
 	    });
 	  },
@@ -546,12 +552,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var tripObject = this.getCurrentTripObject();
 	    var tripEnd = tripObject.onTripEnd || this.settings.onTripEnd;
 	    var tripEndDefer = tripEnd(this.tripIndex, tripObject);
+	    var thisTripIndex = this.tripIndex;
 
 	    $.when(tripEndDefer).then(function() {
 	      if (!that.isFirst()) {
 	        that.decreaseIndex();
 	      }
 	      that.run();
+	    }, function(v) {
+	      if (that.settings.onError(thisTripIndex, tripObject, v)) {
+	        that.stop();
+	      }
 	    });
 	  },
 
@@ -690,13 +701,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var delay = tripObject.delay || this.settings.delay;
 
 	    if (!this.isTripDataValid(tripObject)) {
+
+	      if (this.settings.onError(this.tripIndex, tripObject, "invalid trip")) {
+	        this.stop();
+	        return false;
+	      }
+
 	      // force developers to double check tripData again
-	      if (
-	          (typeof this.settings.skipUndefinedTrip === "function" &&
-	           !this.settings.skipUndefinedTrip(this.tripIndex, tripObject)) ||
-	          this.settings.skipUndefinedTrip === false) {
-	        TripUtils.log
-	            ('Your tripData is not valid at index: ' + this.tripIndex);
+	      if (this.settings.skipUndefinedTrip === false) {
+	        TripUtils.log('Your tripData is not valid at index: ' + this.tripIndex);
 	        this.stop();
 	        return false;
 	      }
@@ -1776,9 +1789,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = [
 	  '<div class="trip-block">',
+	   '<div class="trip-top">',
 	   '<a href="#" class="trip-close"></a>',
-	   '<div class="progress progress-bar-default"><div id="trip-progress" style="width: 0%;opacity:0.4;" aria-valuemax="100" aria-valuemin="0" aria-valuenow="43" role="progressbar" class="progress-bar"></div></div>',
 	   '<div class="trip-header"></div>',
+	   '<div class="progress progress-bar-default"><div id="trip-progress" style="width: 0%;opacity:0.4;" aria-valuemax="100" aria-valuemin="0" aria-valuenow="43" role="progressbar" class="progress-bar"></div></div>',
+	   '</div>',
 	   '<div class="trip-content"></div>',
 	   '<div class="trip-progress-steps"></div>',
 	   '<div class="trip-navigation">',
