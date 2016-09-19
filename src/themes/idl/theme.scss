@@ -1,22 +1,24 @@
 // 
 .trip-overlay.idl {
   @include opacity(0.2);
+  display: none;
 }
 
 .trip-block.idl {
-  min-width: 250px;
-  max-width: 250px;
-  padding: 20px;
+  min-width: 350px;
+  max-width: 350px;
+  padding: 0px;
   background: #fff;
-  @include box-shadow(rgba(0, 0, 0, 0.2) 0 2px 4px 0);
+  border: 1px solid #aaa;
+  @include box-shadow(#444 0 0 15px 5px);
 
   .trip-close {
-    color: #777;
-    font-size: 1.2em;
+    color: white;
+    font-size: 1.4em;
     font-weight: bold;
     margin-left: 10px;
     margin-right: -10px;
-    margin-top: -7px;
+    margin-top: -5px;
 
     &:hover {
       color: #000;
@@ -24,19 +26,28 @@
   }
 
   &.n:before {
-    border-top-color: #fff;
+    border-top-color: #cabebe;
   }
 
   &.s:before {
-    border-bottom-color: #fff;
+    border-bottom-color: #cabebe;
   }
 
   &.e:before {
-    border-right-color: #fff;
+    border-right-color: #cabebe;
   }
 
   &.w:before {
-    border-left-color: #fff;
+    border-left-color: #cabebe;
+  }
+
+  .trip-top {
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    padding: 15px 20px 5px 20px;
+    background: #cabebe;
+    color: white;
+    font-size: 1.2em;
   }
 
   .trip-header {
@@ -47,22 +58,36 @@
 
   .trip-content {
     text-align: left;
+    padding: 10px 20px 0px 20px;
   }
 
   .trip-navigation {
     margin-top: -10px;
     display: block;
-    text-align: left;
+    text-align: right;
+    padding: 5px 20px 5px 20px;
   }
 
   .trip-prev,
   .trip-next {
-    margin: 15px 0px;
-    margin-bottom: -5px;
+    margin: 5px 0px;
+    //margin-bottom: -5px; 
+    border-color: #cabebe;
+    background-color: #cabebe;
+    color: white;
   }
 
   .progress {
     height: 10px;
     margin-bottom: 10px;
   }
+
+  .progress-bar {
+    background-color: #cabebe;
+  }
+
+}
+
+.trip-block.screen-center {
+  min-width: 450px;
 }
