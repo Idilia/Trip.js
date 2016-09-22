@@ -10,6 +10,9 @@ module.exports = function(grunt) {
       all: {
         options: {
           timeout: 10000,
+          page : {
+              viewportSize : { width: 500, height: 2000 }
+          },
           urls: [
             'http://localhost:8000/tests/core/test.html',
             'http://localhost:8000/tests/trip_events/test.html',
