@@ -1130,14 +1130,28 @@ Trip.prototype = {
     var windowTop = $(window).scrollTop();
     var tripBlockTop = this.$tripBlock.offset().top;
     var tripBlockHeight = this.$tripBlock.height();
-    var OFFSET = 100; // make it look nice
 
     if (tripBlockTop + tripBlockHeight < windowTop + windowHeight &&
       tripBlockTop >= windowTop) {
         // tripBlock is located inside the current screen,
         // so we don't have to scroll
+        return;
+    }
+
+    /* make it look nice */
+    var OFFSET = Math.min(100, Math.round(windowHeight / 20));
+    var tripObject = this.getCurrentTripObject();
+    if (tripObject.position === "s") {
+      /* For a south-positioned trip, move the box up until
+       * bottom edge is at bottom of window - offset. */
+      var hiddenTop = this.$root.scrollTop();
+      var hiddenBottom =
+        (tripBlockTop + tripBlockHeight) - (windowTop + windowHeight);
+      this.$root.animate(
+        { scrollTop: hiddenTop + hiddenBottom + OFFSET }, 'slow');
     }
     else {
+      /* For others, move the top */
       this.$root.animate({ scrollTop: tripBlockTop - OFFSET }, 'slow');
     }
   },
