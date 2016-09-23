@@ -1201,8 +1201,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var tripBlockTop = this.$tripBlock.offset().top;
 	    var tripBlockHeight = this.$tripBlock.height();
 
-	    if (tripBlockTop + tripBlockHeight < windowTop + windowHeight &&
-	      tripBlockTop >= windowTop) {
+	    if (tripBlockTop >= 0 &&
+	        tripBlockTop + tripBlockHeight < windowTop + windowHeight &&
+	        tripBlockTop >= windowTop) {
 	        // tripBlock is located inside the current screen,
 	        // so we don't have to scroll
 	        return;
@@ -1211,19 +1212,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /* make it look nice */
 	    var OFFSET = Math.min(100, Math.round(windowHeight / 20));
 	    var tripObject = this.getCurrentTripObject();
+	    var scrollTopValue = 0;
 	    if (tripObject.position === "s") {
 	      /* For a south-positioned trip, move the box up until
 	       * bottom edge is at bottom of window - offset. */
 	      var hiddenTop = this.$root.scrollTop();
 	      var hiddenBottom =
 	        (tripBlockTop + tripBlockHeight) - (windowTop + windowHeight);
-	      this.$root.animate(
-	        { scrollTop: hiddenTop + hiddenBottom + OFFSET }, 'slow');
+	      scrollTopValue = hiddenTop + hiddenBottom + OFFSET;
 	    }
 	    else {
 	      /* For others, move the top */
-	      this.$root.animate({ scrollTop: tripBlockTop - OFFSET }, 'slow');
+	      scrollTopValue = Math.max(0, tripBlockTop - OFFSET);
 	    }
+	    this.$root.animate({ scrollTop: scrollTopValue }, 'slow');
 	  },
 
 	  /**
